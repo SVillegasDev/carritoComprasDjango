@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <title>Document</title>
+    {% include 'header.html' %}
+    {% load crispy_forms_tags %}    
+</head>
+<body class= "bg-dark">
+  {% load humanize %}
+    <div >
+        <nav class="navbar navbar-expand-lg bg-secondary">
+          <div class="container-fluid">
+            <a  href="{% url 'inicio' %}"><img class="chordlogo" src="{% static "images/chordlogo.png" %}"></a>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                         
+              </ul>  
+              {% if user.is_superuser %}
+              <a class="navbar-brand" href="{% url 'agregar_producto' %}"><img class="carrito" src="{% static "images/agregar.png" %}">AGREGAR PRODUCTO</a>
+              <a class="navbar-brand" href="{% url 'listar_productos' %}"><img class="carrito" src="{% static "images/modificar.png" %}">VER PRODUCTOS</a>              
+              {% endif %}        
+              <a class="navbar-brand" href="{% url 'carrito' %}"><img class="carrito" src="{% static "images/cart.png" %}">CARRITO</a>
+              {% if user.is_authenticated %}
+              <a class="navbar-brand" href="{% url 'logout' %}"><img class="salir" src="{% static "images/out.png" %}">CERRAR SESIÓN</a>         
+              <a class="navbar-brand" href="#" class="">!Bienvenido {{ user.username}}</a>
+             {% else %}       
+              <a class="navbar-brand" href="{% url 'login' %}"><img class="perfil" src="{% static "images/profile.png" %}">INGRESAR<a>       
+              <a class="navbar-brand" href="{% url 'registro' %}"><img class="registro" src="{% static "images/register.png" %}">REGISTRARSE</a>        
+              {% endif %}           
+            </div>
+          </div>
+        </nav>        
+    </div>
+
+
+  <div class="container mt-5">
+  <div class="alert bg-secondary" role="alert">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="row" colspan="3" class="text-center">CARRO</th>
+        </tr>
+        <tr>
+          <th scope="col">NOMBRE</th>
+          <th scope="col">PRECIO</th>
+          <th scope="col">CANTIDAD</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% load humanize %}
+      {% if request.session.carro.items %}
+      {% for key, value in request.session.carro.items %}
+        <tr>
+          <td>{{value.nombre}}</td>
+          <td>{{value.total | intcomma}}</td>
+          <td>
+            <a href="{% url 'Sub' value.producto_id %}" class="badge btn btn-dark badge-dark">-</a>
+            {{value.cantidad}}
+            
+            <a href="{% url 'Add' value.producto_id %}" class="badge btn btn-dark badge-dark">+</a>
+          </td>
+        </tr>
+      {% endfor %}
+      {% else %}
+      <tr>
+          <td colspan="3">
+              <div class="alert alert-warning text-center"> No hay productos registrados en el CARRO</div>
+          </td>
+      </tr>
+      {% endif %}
+        <tr>
+          <th scope="row">Total:</th>
+          <td colspan="2">$ {{total_carro | intcomma}}</td>
+        </tr>
+        
+      </tbody>
+    </table>
+    <hr>
+    </div>
+    <div class="row text-center">
+        <div class="col-6"><a href="{% url 'CLS' %}" class="btn btn-danger">Limpiar</a></div>
+        {% if user.is_authenticated %}
+        <div class="col-6"><a href="{% url 'carrito' %}" class="btn btn-success">Comprar</a></div>          
+        {% else %}   
+        <div class="col-6"><a class="btn btn-warning">!DEBES INICIAR SESIÓN PARA FINALIZAR TU COMPRA¡</a></div>        
+        {% endif %}      
+    </div>
+  </div>
+  <div class="container">
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+      <div class="col-md-4 d-flex align-items-center">
+        <a  class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
+          <img class="chordlogo" src="{% static "images/chordlogo.png" %}">
+        </a>
+        <span class="mb-3 mb-md-0 text-muted">© 2022 Chord House SPA.</span>
+      </div>
+    </footer>
+  </div>     
+</body>
+</html>
+
+
+

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% include 'header.html' %}    
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {% load crispy_forms_tags %}
+    <title>Chord House</title>
+</head>
+<body class= "bg-dark">
+  {% load humanize %}
+    <div >
+        <nav class="navbar navbar-expand-lg bg-secondary">
+          <div class="container-fluid">
+            <a  href="{% url 'inicio' %}"><img class="chordlogo" src="{% static "images/chordlogo.png" %}"></a>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                           
+              </ul>  
+              {% if user.is_superuser %}
+              <a class="navbar-brand" href="{% url 'agregar_producto' %}"><img class="carrito" src="{% static "images/agregar.png" %}">AGREGAR PRODUCTO</a>
+              <a class="navbar-brand" href="{% url 'listar_productos' %}"><img class="carrito" src="{% static "images/modificar.png" %}">VER PRODUCTOS</a>              
+              {% endif %}        
+              <a class="navbar-brand" href="{% url 'carrito' %}"><img class="carrito" src="{% static "images/cart.png" %}">CARRITO</a>
+              {% if user.is_authenticated %}
+              <a class="navbar-brand" href="{% url 'logout' %}"><img class="salir" src="{% static "images/out.png" %}">CERRAR SESIÓN</a>         
+              <a class="navbar-brand" href="#" class="">!Bienvenido {{ user.username}}</a>
+             {% else %}       
+              <a class="navbar-brand" href="{% url 'login' %}"><img class="perfil" src="{% static "images/profile.png" %}">INGRESAR<a>       
+              <a class="navbar-brand" href="{% url 'registro' %}"><img class="registro" src="{% static "images/register.png" %}">REGISTRARSE</a>        
+              {% endif %}   
+              {% if messages %}
+                {% for m in messages %}
+                <script>
+                    Swal.fire({
+                        "title": "Felicidades",
+                        "text": "{{m}}",
+                        "icon": "success"
+                    })
+                </script>
+                {% endfor %}
+                {% endif %}        
+            </div>
+          </div>
+        </nav>        
+    </div>
+
+    <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active"><a href="https://www.fender.com/es/start">
+            <img src="{%static "images/fenderdef2.png" %}" class="d-block w-100" alt="...">
+          </div></a>
+          <div class="carousel-item"><a href="https://www.ibanez.com/na/">
+            <img src="{%static "images/newibanez3.png" %}" class="d-block w-100" alt="...">
+          </div></a>
+          <div class="carousel-item"><a href="https://www.shigerukawai.jp/en/">
+            <img src="{%static "images/kawai.jpg" %}" class="d-block w-100" alt="...">
+          </div></a>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+      
+
+
+  <div class="container">    
+    <div class="row">
+        <div class="col-12">
+            <div class="row" style="padding: 10px 0;">
+                <div class="col-12">
+                    <div class="row">
+                        {% for producto in productos %}
+                        <div class="col-4">
+                            <div class="card text-center text-white bg-secondary mb-3" style="height: 39rem; width: 23rem; margin: 5px 0px;">
+                                <div class="card-body ">
+                                  {% if producto.imagen %}
+                                  <img style="max-height: 190px; max-width: 330px; display:block;
+                                  margin:auto; class="foto" src="{{ producto.imagen.url }}" alt="imagen producto">
+                                  {% endif %}
+                                    <p class="card-text">{{producto.marca | capfirst}}</p>   
+                                    <h5 class="card-title">{{producto.nombre_producto | title}}</h5>                                        
+                                    <p class="card-text">{{producto.tipo_producto | capfirst}}
+                                    {% if producto.nuevo == True %}  
+                                    (Nuevo) 
+                                    {% else %}   
+                                    (Usado)     
+                                    {% endif %} 
+                                  </p>       
+                                    <p class="card-text">{{producto.descripcion | capfirst}}</p> 
+                                                      
+                                    <p class="card-text">${{producto.precio | intcomma}}</p>
+                                    <a href="{% url 'agregar' producto.id %}" class="btn btn-warning">Agregar al carrito</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>     
+<div class="container">
+  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <div class="col-md-4 d-flex align-items-center">
+      <a  class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
+        <img class="chordlogo" src="{% static "images/chordlogo.png" %}">
+      </a>
+      <span class="mb-3 mb-md-0 text-muted">© 2022 Chord House SPA.</span>
+    </div>
+  </footer>
+</div>     
+</body>
+</html>

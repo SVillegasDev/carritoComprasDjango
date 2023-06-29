@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  {% include 'header.html' %}
+  {% load crispy_forms_tags %}
+  <title>Lista de Productos</title>
+</head>
+
+
+
+<body class="bg-dark">
+  <script>
+    function eliminarProducto(id) {
+      Swal.fire({
+        "title":"¿Estás seguro?",
+        "text":"esta acción no se puede deshacer",
+        "icon":"question",
+        "showCancelButton":"True",
+        "cancelButtonText":"No, Cancelar",
+        "confirmButtonText":"Si, Eliminar",
+        "reverseButtons":"True",
+        "confirmButtonColor":"darkred"
+      })
+      .then(function(result) {
+        if(result.isConfirmed){
+          window.location.href = "/eliminar-producto/"+id+"/"
+        }
+      })
+    }
+  </script>
+  {% load humanize %}
+  <br>
+  <br>
+  <br>
+  <div class="row">
+    <div class="col-12 col-md-6 offset-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h2>Listado de Productos</h2>
+          <hr>
+          {% if messages %}
+          {% for m in messages %}
+          <script>
+            Swal.fire({
+              "title": "Felicidades",
+              "text": "{{m}}",
+              "icon": "success"
+            })
+          </script>
+          {% endfor %}
+          {% endif %}
+          <table class="table table-striped table-hover table-responsive-sm">
+            <thead>
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Precio</th>
+                <th scope="col">Stock</th>
+                <th scope="col">¿Es nuevo?</th>
+                <th scope="col">Marca</th>
+                <th scope="col">Categoria</th>
+                <th scope="col">Opciones</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              {% for p in entity %}
+
+              <tr>
+                <td>{{ p.nombre_producto | title }}</td>
+                <td>{{ p.precio | intcomma }}</td>
+                <td>{{ p.stock | intcomma }}</td>
+                <td>
+                  {% if p.nuevo %}
+                  SI
+                  {% else %}
+                  NO
+                  {% endif %}
+                </td>
+                <td>{{ p.marca | title }}</td>
+                <td>{{ p.tipo_producto | title }}</td>
+                <td>
+                  <a href="{% url 'modificar_producto' p.id %}" class="btn btn-secondary btn-sm">Modificar</a>
+                  <a href="#" onclick="eliminarProducto({{ p.id }})" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <div>
+            {% include 'paginator.html' %}
+          </div>
+          <a href="/index"><input type="button" value="Volver" class="btn btn-primary float-end"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
